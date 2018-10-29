@@ -52,6 +52,7 @@ APruebaDisembodiedCharacter::APruebaDisembodiedCharacter()
 
 void APruebaDisembodiedCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
+	/*
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
@@ -74,6 +75,7 @@ void APruebaDisembodiedCharacter::SetupPlayerInputComponent(class UInputComponen
 
 	// VR headset functionality
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &APruebaDisembodiedCharacter::OnResetVR);
+	*/
 }
 
 
