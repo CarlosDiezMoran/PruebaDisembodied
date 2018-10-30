@@ -79,7 +79,7 @@ class PRUEBADISEMBODIED_API AYorickController : public APlayerController
 	public:
 
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-			APruebaDisembodiedCharacter* YorickOwner;
+			APruebaDisembodiedCharacter* YorickCharacter;
 
 	private:
 

@@ -4,12 +4,13 @@
 #include "EventsManager/EventsManagerLibrary.h"
 #include "Debug/DebugLibrary.h"
 #include "PruebaDisembodiedCharacter.h"
+#include "Runtime/Engine/Classes/Engine/World.h"
 
 AYorickController::AYorickController() : Super()
 {
 	DISEMLOG();
 
-	CurrentState = EYorickState::STANDARD;
+	CurrentState = EYorickState::DISABLED;
 }
 
 void AYorickController::BeginPlayingState()
@@ -17,9 +18,9 @@ void AYorickController::BeginPlayingState()
 	DISEMLOG();
 
 	Super::BeginPlayingState();
-	YorickOwner = Cast<APruebaDisembodiedCharacter>(GetPawn());
+	YorickCharacter = Cast<APruebaDisembodiedCharacter>(GetPawn());
 
-	if (!YorickOwner->IsValidLowLevel() || YorickOwner->IsPendingKill()) 
+	if (!YorickCharacter->IsValidLowLevel() || YorickCharacter->IsPendingKill())
 	{
 		DISEMLOG("Error. YorickOwner is NULL");
 	}
@@ -30,6 +31,8 @@ void AYorickController::BeginPlayingState()
 	{
 		DISEMLOG("Error. EventsManager is NULL");
 	}
+
+	SetState(EYorickState::STANDARD);
 }
 
 void AYorickController::Tick(float DeltaSeconds)
@@ -61,7 +64,7 @@ EYorickState AYorickController::GetCurrentState()
 {
 	DISEMLOG();
 
-	return EYorickState();
+	return CurrentState;
 }
 
 void AYorickController::SetDisabledState()
@@ -74,8 +77,6 @@ void AYorickController::SetDisabledState()
 void AYorickController::SetStandardState()
 {
 	DISEMLOG();
-
-	
 
 	//--------Axis Binding---------------------------------------------------------------------------
 	this->InputComponent->BindAxis("Axis_MoveForward", this, &AYorickController::MoveForward);
@@ -94,48 +95,80 @@ void AYorickController::SetStandardState()
 	//--------Action Binding---------------------------------------------------------------------------
 	this->InputComponent->BindAction("Action_Use", EInputEvent::IE_Pressed, this, &AKhionController::Interact);
 	this->InputComponent->BindAction("Action_Sprint", EInputEvent::IE_Pressed, this, &AKhionController::Sprint);
-	//this->InputComponent->BindAction("Action_Sprint"			, EInputEvent::IE_Released,this, &AKhionController::SprintRelease);
-	this->InputComponent->BindAction("Action_WatchBracelet", EInputEvent::IE_Pressed, this, &AKhionController::WatchBracelet);
-	this->InputComponent->BindAction("Action_WatchBracelet", EInputEvent::IE_Released, this, &AKhionController::WatchBraceletRelease);
-	this->InputComponent->BindAction("Action_Aim", EInputEvent::IE_Pressed, this, &AKhionController::Aim);
-	this->InputComponent->BindAction("Action_Aim", EInputEvent::IE_Released, this, &AKhionController::AimRelease);
-	this->InputComponent->BindAction("Action_Reload", EInputEvent::IE_Released, this, &AKhionController::EnterQTE);
-	this->InputComponent->BindAction("Action_Reload", EInputEvent::IE_Pressed, this, &AKhionController::ShowAmmo);
-	this->InputComponent->BindAction("Action_Fire", EInputEvent::IE_Pressed, this, &AKhionController::Melee);
-	this->InputComponent->BindAction("Action_ThermalVision", EInputEvent::IE_Pressed, this, &AKhionController::ActivateThermal);
-	this->InputComponent->BindAction("Action_Heating", EInputEvent::IE_Pressed, this, &AKhionController::Heating);
-	this->InputComponent->BindAction("Action_Flashlight", EInputEvent::IE_Pressed, this, &AKhionController::ToggleFlashlight);
-	this->InputComponent->BindAction("Action_Crouch", EInputEvent::IE_Pressed, this, &AKhionController::Crouch);
-	this->InputComponent->BindAction("Action_Inventory", EInputEvent::IE_Pressed, this, &AKhionController::OpenMenu);
-	this->InputComponent->BindAction("Action_Up", EInputEvent::IE_Released, this, &AKhionController::UnequipObject);
-	this->InputComponent->BindAction("Action_Left", EInputEvent::IE_Released, this, &AKhionController::SelectRange);
-	this->InputComponent->BindAction("Action_Down", EInputEvent::IE_Released, this, &AKhionController::SelectRegeneration);
-	this->InputComponent->BindAction("Action_Right", EInputEvent::IE_Released, this, &AKhionController::SelectDistraction);
-	this->InputComponent->BindAction("Action_Look", EInputEvent::IE_Pressed, this, &AKhionController::Looking);
-	this->InputComponent->BindAction("Action_Pause", EInputEvent::IE_Pressed, this, &AKhionController::PauseMenu);
 	*/
 }
 
 void AYorickController::MoveForward_Implementation(float Value)
 {
+	DISEMLOG();
+
+	if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill() && Value != 0.0f)
+	{
+		// find out which way is forward
+		const FRotator Rotation = GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+		// get forward vector
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		YorickCharacter->AddMovementInput(Direction, Value);
+	}
 }
 
 void AYorickController::MoveRight_Implementation(float Value)
 {
+	DISEMLOG();
+
+	if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill() && Value != 0.0f)
+	{
+		// find out which way is right
+		const FRotator Rotation = GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+		// get right vector 
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		// add movement in that direction
+		YorickCharacter->AddMovementInput(Direction, Value);
+	}
 }
 
 void AYorickController::TurnAtRate_Implementation(float Value)
 {
+	DISEMLOG();
+
+	if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill() && Value != 0.0f) 
+	{
+		// calculate delta for this frame from the rate information
+		YorickCharacter->AddControllerYawInput(Value * YorickCharacter->BaseTurnRate * GetWorld()->GetDeltaSeconds());
+	}	
 }
 
 void AYorickController::Turn_Implementation(float Value)
 {
+	DISEMLOG();
+
+	if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill() && Value != 0.0f)
+	{
+		YorickCharacter->AddControllerYawInput(Value);
+	}
 }
 
 void AYorickController::LookUp_Implementation(float Value)
 {
+	DISEMLOG();
+
+	if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill() && Value != 0.0f) 
+	{
+		YorickCharacter->AddControllerPitchInput(Value);
+	}
 }
 
 void AYorickController::LookUpAtRate_Implementation(float Value)
 {
+	DISEMLOG();
+
+	if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill() && Value != 0.0f) 
+	{
+		// calculate delta for this frame from the rate information
+		YorickCharacter->AddControllerPitchInput(Value * YorickCharacter->BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+	}
 }
