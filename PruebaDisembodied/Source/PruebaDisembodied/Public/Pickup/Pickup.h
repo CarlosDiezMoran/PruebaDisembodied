@@ -33,11 +33,11 @@ public:
 
 public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
-		USceneComponent* PickupRoot;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
+	//	USceneComponent* PickupRoot;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Pickup", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* PickupMesh;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Pickup")
 		USphereComponent* PickupDetection;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
 		TSubclassOf<AEquippedObject> EquippedObjectToSpawn;

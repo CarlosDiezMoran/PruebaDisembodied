@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "EquippedObject.generated.h"
 
+class APickup;
+
 UCLASS()
 class PRUEBADISEMBODIED_API AEquippedObject : public AActor
 {
@@ -25,11 +27,10 @@ class PRUEBADISEMBODIED_API AEquippedObject : public AActor
 
 	public:
 
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EquippedObject")
+		UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "EquippedObject")
 			USceneComponent* EquippedObjectRoot;
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EquippedObject")
+		UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "EquippedObject")
 			UStaticMeshComponent* EquippedObjectMesh;
-
-	
-	
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EquippedObject")
+			TSubclassOf<APickup> PickupObjectToSpawn;
 };

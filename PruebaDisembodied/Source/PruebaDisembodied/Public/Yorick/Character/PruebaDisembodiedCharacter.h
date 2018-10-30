@@ -70,6 +70,7 @@ class APruebaDisembodiedCharacter : public ACharacter
 
 
 	private:
+
 		UPROPERTY()
 			TArray<APickup*> InteractiveObjects;
 		UPROPERTY()

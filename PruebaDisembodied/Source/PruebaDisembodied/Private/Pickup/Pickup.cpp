@@ -5,6 +5,7 @@
 #include "Runtime/Engine/Classes/Components/StaticMeshComponent.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Runtime/Engine/Classes/Engine/World.h"
+#include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
 #include "YorickController.h"
 #include "DebugLibrary.h"
 
@@ -17,19 +18,23 @@ APickup::APickup()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//Root
-	PickupRoot = CreateDefaultSubobject<USceneComponent>(TEXT("PickupRoot"));
-	SetRootComponent(PickupRoot);
+	//PickupRoot = CreateDefaultSubobject<USceneComponent>(TEXT("PickupRoot"));
+	//SetRootComponent(PickupRoot);
 
 	//Mesh
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PickupMesh"));
-	PickupMesh->SetupAttachment(PickupRoot);
+	PickupMesh->SetSimulatePhysics(true);
+	PickupMesh->SetMassOverrideInKg(NAME_None, 100.f, true);
+	SetRootComponent(PickupMesh);
+	//PickupMesh->SetupAttachment(PickupRoot);
 
 	//Detection
 	PickupDetection = CreateDefaultSubobject<USphereComponent>(TEXT("Detection"));
-	PickupDetection->SetupAttachment(PickupRoot);
 	PickupDetection->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	PickupDetection->bGenerateOverlapEvents = true;
 	PickupDetection->SetSphereRadius(200.f);
+	//PickupDetection->SetupAttachment(PickupRoot);
+	PickupDetection->SetupAttachment(PickupMesh);
 	
 }
 

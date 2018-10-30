@@ -54,7 +54,16 @@ void UEquipmentComponent::AddEquippedObject(TSubclassOf<AEquippedObject> ObjectC
 		FVector Location(0.0f, 0.0f, 0.0f);
 		FRotator Rotation(0.0f, 0.0f, 0.0f);
 		EquippedObject = GetWorld()->SpawnActor<AEquippedObject>(ObjectClass, Location, Rotation, SpawnInfo);
-		EquippedObject->AttachToComponent(Yorick->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SocketOwner);
+
+		if (EquippedObject->IsValidLowLevel() && !EquippedObject->IsPendingKill()) 
+		{
+			EquippedObject->AttachToComponent(Yorick->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SocketOwner);
+		}
+		else 
+		{
+			DISEMLOG("Error. EquippedObject is NULL");
+		}
+		
 	}
 	else 
 	{
@@ -68,9 +77,26 @@ void UEquipmentComponent::RemoveEquippedObject()
 
 	if (EquippedObject->IsValidLowLevel() && !EquippedObject->IsPendingKill())
 	{
-		EquippedObject = nullptr;
+		FActorSpawnParameters SpawnInfo;
+		FVector Location = EquippedObject->GetActorLocation();
+		FRotator Rotation = EquippedObject->GetActorRotation();
+		APickup* Pickup = GetWorld()->SpawnActor<APickup>(EquippedObject->PickupObjectToSpawn, Location, Rotation, SpawnInfo);
 
-		//TODO: SPAWNEAR OBJETO
+		if (Pickup->IsValidLowLevel() && !Pickup->IsPendingKill())
+		{
+			Pickup->PickupMesh->SetSimulatePhysics(true);
+		}
+		else 
+		{
+			DISEMLOG("Error. Pickup is NULL");
+		}
+			
+		EquippedObject->Destroy();
+	
+	}
+	else 
+	{
+		DISEMLOG("Error. EquippedObject is NULL");
 	}
 }
 
@@ -80,7 +106,7 @@ void UEquipmentComponent::Interact(APickup* Pickup)
 
 	if (EquippedObject->IsValidLowLevel() && !EquippedObject->IsPendingKill()) 
 	{
-		DISEMLOG("Aqui lo soltarias", ELog::PRINT_ONLY, 5.f, FColor::Red);
+		RemoveEquippedObject();
 	}
 	else 
 	{
