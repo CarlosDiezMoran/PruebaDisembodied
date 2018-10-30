@@ -8,12 +8,17 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "DebugLibrary.h"
+#include "Pickup/Pickup.h"
+#include "EquipmentComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 // APruebaDisembodiedCharacter
 
 APruebaDisembodiedCharacter::APruebaDisembodiedCharacter()
 {
+	DISEMLOG();
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
@@ -45,4 +50,60 @@ APruebaDisembodiedCharacter::APruebaDisembodiedCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
+	//Equipment
+	RightHand = CreateDefaultSubobject<UEquipmentComponent>(TEXT("RightHand"));
+	AddOwnedComponent(RightHand);
+	LeftHand = CreateDefaultSubobject<UEquipmentComponent>(TEXT("LeftHand"));
+	AddOwnedComponent(LeftHand);
+}
+
+void APruebaDisembodiedCharacter::AddDetectedObject(APickup * DetectedObject)
+{
+	DISEMLOG();
+	InteractiveObjects.AddUnique(DetectedObject);
+	FindClosestObject();
+}
+
+void APruebaDisembodiedCharacter::RemoveDetectedObject(APickup * DetectedObject)
+{
+	DISEMLOG();
+	InteractiveObjects.RemoveSingle(DetectedObject);
+	FindClosestObject();
+}
+
+void APruebaDisembodiedCharacter::FindClosestObject()
+{
+	DISEMLOG();
+	
+	FVector YorickLocation = GetActorLocation();
+
+	float CosDetectionAngle = FMath::Cos(DetectionAngle);
+	float ClosestDist = 9999999.f;
+
+	for (APickup* InteractiveObject : InteractiveObjects) 
+	{
+		if (InteractiveObject->IsValidLowLevel() && !InteractiveObject->IsPendingKill()) 
+		{
+			float DotRes = GetDotProductTo(InteractiveObject);
+
+			//Is inside field of view
+			if (DotRes > CosDetectionAngle)
+			{
+				FVector PickupLocation = InteractiveObject->GetActorLocation();
+				float Distance = FVector::Distance(YorickLocation,PickupLocation);
+
+				//Check closest
+				if (Distance < ClosestDist) 
+				{
+					ClosestDist = Distance;
+					ClosestInteractiveObject = InteractiveObject;
+				}
+			}
+		}
+	}
+	if (ClosestDist == 9999999.f) 
+	{
+		ClosestInteractiveObject = nullptr;
+	}
 }

@@ -33,6 +33,7 @@ void AYorickController::BeginPlayingState()
 	}
 
 	SetState(EYorickState::STANDARD);
+	UDebugLibrary::ActivateLog();
 }
 
 void AYorickController::Tick(float DeltaSeconds)
@@ -111,6 +112,7 @@ void AYorickController::MoveForward_Implementation(float Value)
 		// get forward vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		YorickCharacter->AddMovementInput(Direction, Value);
+		YorickCharacter->FindClosestObject();
 	}
 }
 
@@ -128,6 +130,7 @@ void AYorickController::MoveRight_Implementation(float Value)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction
 		YorickCharacter->AddMovementInput(Direction, Value);
+		YorickCharacter->FindClosestObject();
 	}
 }
 
@@ -170,5 +173,25 @@ void AYorickController::LookUpAtRate_Implementation(float Value)
 	{
 		// calculate delta for this frame from the rate information
 		YorickCharacter->AddControllerPitchInput(Value * YorickCharacter->BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+	}
+}
+
+void AYorickController::AddDetectedObject(APickup * DetectedObject)
+{
+	DISEMLOG();
+
+	if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill())
+	{
+		YorickCharacter->AddDetectedObject(DetectedObject);
+	}
+}
+
+void AYorickController::RemoveDetectedObject(APickup * DetectedObject)
+{
+	DISEMLOG();
+
+	if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill())
+	{
+		YorickCharacter->RemoveDetectedObject(DetectedObject);
 	}
 }

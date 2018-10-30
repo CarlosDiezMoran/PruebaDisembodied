@@ -68,6 +68,15 @@ class PRUEBADISEMBODIED_API AYorickController : public APlayerController
 
 		//*********************************************************//
 
+		//********************** Pickups ***************************//
+
+		UFUNCTION(BlueprintCallable, Category = "ObjectDetection")
+			void AddDetectedObject(APickup* DetectedObject);
+		UFUNCTION(BlueprintCallable, Category = "ObjectDetection")
+			void RemoveDetectedObject(APickup* DetectedObject);
+
+		//**********************************************************//
+
 	private:
 
 		UFUNCTION()

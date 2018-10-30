@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "PruebaDisembodiedCharacter.generated.h"
 
+class APickup;
+class UEquipmentComponent;
+
 UCLASS(config=Game)
 class APruebaDisembodiedCharacter : public ACharacter
 {
@@ -18,6 +21,13 @@ class APruebaDisembodiedCharacter : public ACharacter
 		FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 		/** Returns FollowCamera subobject **/
 		FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+		UFUNCTION(BlueprintCallable, Category = "ObjectDetection")
+			void AddDetectedObject(APickup* DetectedObject);
+		UFUNCTION(BlueprintCallable, Category = "ObjectDetection")
+			void RemoveDetectedObject(APickup* DetectedObject);
+		UFUNCTION(BlueprintCallable, Category = "ObjectDetection")
+			void FindClosestObject();
 		
 	public:
 		
@@ -36,5 +46,21 @@ class APruebaDisembodiedCharacter : public ACharacter
 		/** Follow camera */
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 			class UCameraComponent* FollowCamera;
+
+		UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+			float DetectionAngle = 90.f;
+
+		//********************** Equipment ***************************//
+		UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+			UEquipmentComponent* RightHand;
+		UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+			UEquipmentComponent* LeftHand;
+
+
+	private:
+		UPROPERTY()
+			TArray<APickup*> InteractiveObjects;
+		UPROPERTY()
+			APickup* ClosestInteractiveObject;
 };
 
