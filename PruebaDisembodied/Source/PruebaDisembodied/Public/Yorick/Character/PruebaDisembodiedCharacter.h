@@ -22,12 +22,24 @@ class APruebaDisembodiedCharacter : public ACharacter
 		/** Returns FollowCamera subobject **/
 		FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+		//********************** Pickups ***************************//
+
 		UFUNCTION(BlueprintCallable, Category = "ObjectDetection")
 			void AddDetectedObject(APickup* DetectedObject);
 		UFUNCTION(BlueprintCallable, Category = "ObjectDetection")
 			void RemoveDetectedObject(APickup* DetectedObject);
 		UFUNCTION(BlueprintCallable, Category = "ObjectDetection")
 			void FindClosestObject();
+
+		//**********************************************************//
+
+		//********************** Equipment ***************************//
+		UFUNCTION(BlueprintCallable, Category = "Equipment")
+			void LeftHand();
+		UFUNCTION(BlueprintCallable, Category = "Equipment")
+			void RightHand();
+
+		//**********************************************************//
 		
 	public:
 		
@@ -52,9 +64,9 @@ class APruebaDisembodiedCharacter : public ACharacter
 
 		//********************** Equipment ***************************//
 		UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-			UEquipmentComponent* RightHand;
+			UEquipmentComponent* RightHandComponent;
 		UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-			UEquipmentComponent* LeftHand;
+			UEquipmentComponent* LeftHandComponent;
 
 
 	private:

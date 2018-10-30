@@ -22,14 +22,14 @@ void AYorickController::BeginPlayingState()
 
 	if (!YorickCharacter->IsValidLowLevel() || YorickCharacter->IsPendingKill())
 	{
-		DISEMLOG("Error. YorickOwner is NULL");
+		DISEMLOG("Error. YorickCharacter is NULL.");
 	}
 
 	EventsManager = UEventsManagerLibrary::GetEventsManager();
 
 	if (!EventsManager->IsValidLowLevel() || EventsManager->IsPendingKill()) 
 	{
-		DISEMLOG("Error. EventsManager is NULL");
+		DISEMLOG("Error. EventsManager is NULL.");
 	}
 
 	SetState(EYorickState::STANDARD);
@@ -91,28 +91,33 @@ void AYorickController::SetStandardState()
 	this->InputComponent->BindAxis("Axis_LookUpRate", this, &AYorickController::LookUpAtRate);
 	//------------------------------------------------------------------------------------------------
 
-	/*
-
 	//--------Action Binding---------------------------------------------------------------------------
-	this->InputComponent->BindAction("Action_Use", EInputEvent::IE_Pressed, this, &AKhionController::Interact);
-	this->InputComponent->BindAction("Action_Sprint", EInputEvent::IE_Pressed, this, &AKhionController::Sprint);
-	*/
+	this->InputComponent->BindAction("L1", EInputEvent::IE_Pressed, this, &AYorickController::LeftHand);
+	this->InputComponent->BindAction("R1", EInputEvent::IE_Pressed, this, &AYorickController::RightHand);
+	
 }
 
 void AYorickController::MoveForward_Implementation(float Value)
 {
 	DISEMLOG();
 
-	if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill() && Value != 0.0f)
+	if (Value != 0.0f) 
 	{
-		// find out which way is forward
-		const FRotator Rotation = GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
+		if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill())
+		{
+			// find out which way is forward
+			const FRotator Rotation = GetControlRotation();
+			const FRotator YawRotation(0, Rotation.Yaw, 0);
 
-		// get forward vector
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		YorickCharacter->AddMovementInput(Direction, Value);
-		YorickCharacter->FindClosestObject();
+			// get forward vector
+			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+			YorickCharacter->AddMovementInput(Direction, Value);
+			YorickCharacter->FindClosestObject();
+		}
+		else
+		{
+			DISEMLOG("Error. YorickCharacter is NULL.");
+		}
 	}
 }
 
@@ -120,17 +125,24 @@ void AYorickController::MoveRight_Implementation(float Value)
 {
 	DISEMLOG();
 
-	if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill() && Value != 0.0f)
+	if (Value != 0.0f) 
 	{
-		// find out which way is right
-		const FRotator Rotation = GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
+		if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill())
+		{
+			// find out which way is right
+			const FRotator Rotation = GetControlRotation();
+			const FRotator YawRotation(0, Rotation.Yaw, 0);
 
-		// get right vector 
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		// add movement in that direction
-		YorickCharacter->AddMovementInput(Direction, Value);
-		YorickCharacter->FindClosestObject();
+			// get right vector 
+			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+			// add movement in that direction
+			YorickCharacter->AddMovementInput(Direction, Value);
+			YorickCharacter->FindClosestObject();
+		}
+		else
+		{
+			DISEMLOG("Error. YorickCharacter is NULL.");
+		}
 	}
 }
 
@@ -138,20 +150,34 @@ void AYorickController::TurnAtRate_Implementation(float Value)
 {
 	DISEMLOG();
 
-	if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill() && Value != 0.0f) 
+	if (Value != 0.0f) 
 	{
-		// calculate delta for this frame from the rate information
-		YorickCharacter->AddControllerYawInput(Value * YorickCharacter->BaseTurnRate * GetWorld()->GetDeltaSeconds());
-	}	
+		if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill())
+		{
+			// calculate delta for this frame from the rate information
+			YorickCharacter->AddControllerYawInput(Value * YorickCharacter->BaseTurnRate * GetWorld()->GetDeltaSeconds());
+		}
+		else
+		{
+			DISEMLOG("Error. YorickCharacter is NULL.");
+		}
+	}
 }
 
 void AYorickController::Turn_Implementation(float Value)
 {
 	DISEMLOG();
 
-	if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill() && Value != 0.0f)
+	if (Value != 0.0f) 
 	{
-		YorickCharacter->AddControllerYawInput(Value);
+		if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill())
+		{
+			YorickCharacter->AddControllerYawInput(Value);
+		}
+		else
+		{
+			DISEMLOG("Error. YorickCharacter is NULL.");
+		}
 	}
 }
 
@@ -159,9 +185,16 @@ void AYorickController::LookUp_Implementation(float Value)
 {
 	DISEMLOG();
 
-	if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill() && Value != 0.0f) 
+	if (Value != 0.0f) 
 	{
-		YorickCharacter->AddControllerPitchInput(Value);
+		if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill())
+		{
+			YorickCharacter->AddControllerPitchInput(Value);
+		}
+		else
+		{
+			DISEMLOG("Error. YorickCharacter is NULL.");
+		}
 	}
 }
 
@@ -169,10 +202,45 @@ void AYorickController::LookUpAtRate_Implementation(float Value)
 {
 	DISEMLOG();
 
-	if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill() && Value != 0.0f) 
+	if (Value != 0.0f) 
 	{
-		// calculate delta for this frame from the rate information
-		YorickCharacter->AddControllerPitchInput(Value * YorickCharacter->BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+		if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill())
+		{
+			// calculate delta for this frame from the rate information
+			YorickCharacter->AddControllerPitchInput(Value * YorickCharacter->BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+		}
+		else
+		{
+			DISEMLOG("Error. YorickCharacter is NULL.");
+		}
+	}
+}
+
+void AYorickController::LeftHand_Implementation()
+{
+	DISEMLOG();
+
+	if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill()) 
+	{
+		YorickCharacter->LeftHand();
+	}
+	else
+	{
+		DISEMLOG("Error. YorickCharacter is NULL.");
+	}
+}
+
+void AYorickController::RightHand_Implementation()
+{
+	DISEMLOG();
+
+	if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill())
+	{
+		YorickCharacter->RightHand();
+	}
+	else
+	{
+		DISEMLOG("Error. YorickCharacter is NULL.");
 	}
 }
 
@@ -184,6 +252,10 @@ void AYorickController::AddDetectedObject(APickup * DetectedObject)
 	{
 		YorickCharacter->AddDetectedObject(DetectedObject);
 	}
+	else
+	{
+		DISEMLOG("Error. YorickCharacter is NULL.");
+	}
 }
 
 void AYorickController::RemoveDetectedObject(APickup * DetectedObject)
@@ -193,5 +265,9 @@ void AYorickController::RemoveDetectedObject(APickup * DetectedObject)
 	if (YorickCharacter->IsValidLowLevel() && !YorickCharacter->IsPendingKill())
 	{
 		YorickCharacter->RemoveDetectedObject(DetectedObject);
+	}
+	else
+	{
+		DISEMLOG("Error. YorickCharacter is NULL.");
 	}
 }

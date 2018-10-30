@@ -70,6 +70,13 @@ class PRUEBADISEMBODIED_API AYorickController : public APlayerController
 
 		//********************** Pickups ***************************//
 
+		UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "BindingFunction")
+			void LeftHand();
+		virtual void LeftHand_Implementation();
+		UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "BindingFunction")
+			void RightHand();
+		virtual void RightHand_Implementation();
+
 		UFUNCTION(BlueprintCallable, Category = "ObjectDetection")
 			void AddDetectedObject(APickup* DetectedObject);
 		UFUNCTION(BlueprintCallable, Category = "ObjectDetection")

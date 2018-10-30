@@ -49,10 +49,10 @@ APruebaDisembodiedCharacter::APruebaDisembodiedCharacter()
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 
 	//Equipment
-	RightHand = CreateDefaultSubobject<UEquipmentComponent>(TEXT("RightHand"));
-	AddOwnedComponent(RightHand);
-	LeftHand = CreateDefaultSubobject<UEquipmentComponent>(TEXT("LeftHand"));
-	AddOwnedComponent(LeftHand);
+	RightHandComponent = CreateDefaultSubobject<UEquipmentComponent>(TEXT("RightHand"));
+	AddOwnedComponent(RightHandComponent);
+	LeftHandComponent = CreateDefaultSubobject<UEquipmentComponent>(TEXT("LeftHand"));
+	AddOwnedComponent(LeftHandComponent);
 }
 
 void APruebaDisembodiedCharacter::AddDetectedObject(APickup * DetectedObject)
@@ -103,5 +103,34 @@ void APruebaDisembodiedCharacter::FindClosestObject()
 	if (ClosestDist == 9999999.f) 
 	{
 		ClosestInteractiveObject = nullptr;
+	}
+}
+
+void APruebaDisembodiedCharacter::LeftHand()
+{
+	DISEMLOG();
+
+	if (LeftHandComponent->IsValidLowLevel() || LeftHandComponent->IsPendingKill()) 
+	{
+		LeftHandComponent->Interact(ClosestInteractiveObject);
+	}
+	else 
+	{
+		DISEMLOG("Error. LeftHandComponent is NULL");
+	}
+	
+}
+
+void APruebaDisembodiedCharacter::RightHand()
+{
+	DISEMLOG();
+
+	if (RightHandComponent->IsValidLowLevel() || RightHandComponent->IsPendingKill())
+	{
+		RightHandComponent->Interact(ClosestInteractiveObject);
+	}
+	else 
+	{
+		DISEMLOG("Error. RightHandComponent is NULL");
 	}
 }

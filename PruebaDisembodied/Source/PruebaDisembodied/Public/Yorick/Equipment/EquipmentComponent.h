@@ -7,6 +7,7 @@
 #include "EquipmentComponent.generated.h"
 
 class AEquippedObject;
+class APickup;
 
 UENUM(BlueprintType)
 enum class EEquipmentType : uint8 {
@@ -31,9 +32,11 @@ class PRUEBADISEMBODIED_API UEquipmentComponent : public UActorComponent
 		// Called every frame
 		virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 		UFUNCTION(BlueprintCallable)
-			void AddEquippedObject(AEquippedObject* Object);
+			void AddEquippedObject(TSubclassOf<AEquippedObject> ObjectClass);
 		UFUNCTION(BlueprintCallable)
 			void RemoveEquippedObject();
+		UFUNCTION(BlueprintCallable)
+			void Interact(APickup* Pickup = nullptr);
 
 	public:
 

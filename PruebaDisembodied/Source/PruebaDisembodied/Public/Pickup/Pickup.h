@@ -8,6 +8,7 @@
 
 class USphereComponent;
 class AYorickController;
+class AEquippedObject;
 
 UCLASS()
 class PRUEBADISEMBODIED_API APickup : public AActor
@@ -38,6 +39,8 @@ public:
 		UStaticMeshComponent* PickupMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
 		USphereComponent* PickupDetection;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
+		TSubclassOf<AEquippedObject> EquippedObjectToSpawn;
 
 protected:
 

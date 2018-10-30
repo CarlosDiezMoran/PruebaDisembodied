@@ -23,6 +23,13 @@ class PRUEBADISEMBODIED_API AEquippedObject : public AActor
 		// Called every frame
 		virtual void Tick(float DeltaTime) override;
 
+	public:
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EquippedObject")
+			USceneComponent* EquippedObjectRoot;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EquippedObject")
+			UStaticMeshComponent* EquippedObjectMesh;
+
 	
 	
 };
