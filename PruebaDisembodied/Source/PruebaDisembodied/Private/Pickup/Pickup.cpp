@@ -30,6 +30,7 @@ APickup::APickup()
 	PickupDetection->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	PickupDetection->bGenerateOverlapEvents = true;
 	PickupDetection->SetSphereRadius(200.f);
+	
 }
 
 // Called when the game starts or when spawned

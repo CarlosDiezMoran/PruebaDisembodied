@@ -12,9 +12,6 @@
 #include "Pickup/Pickup.h"
 #include "EquipmentComponent.h"
 
-//////////////////////////////////////////////////////////////////////////
-// APruebaDisembodiedCharacter
-
 APruebaDisembodiedCharacter::APruebaDisembodiedCharacter()
 {
 	DISEMLOG();
@@ -102,6 +99,7 @@ void APruebaDisembodiedCharacter::FindClosestObject()
 			}
 		}
 	}
+
 	if (ClosestDist == 9999999.f) 
 	{
 		ClosestInteractiveObject = nullptr;
