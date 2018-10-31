@@ -55,6 +55,10 @@ void APickup::BeginPlay()
 		PickupDetection->OnComponentBeginOverlap.AddDynamic(this, &APickup::OnDetectionBeginOverlap);
 		PickupDetection->OnComponentEndOverlap.AddDynamic(this, &APickup::OnDetectionEndOverlap);
 	}
+	else 
+	{
+		DISEMLOG("Error. PickupDetection is NULL");
+	}
 
 	Super::BeginPlay();
 }
