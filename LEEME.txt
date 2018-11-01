@@ -1,0 +1,47 @@
+
+
+Buenas!
+
+Os comento un poco por encima lo que os entrego en el proyecto.
+
+-Sistema de Manos
+
+	-He creado un EquipmentComponent y le he añadido 2 al Character, representando las manos. 
+	-He creado una clase Pickup que representa los objetos que encontramos por el mapa.
+	-En el momento en el que el Character se encuentre dentro del SphereCollision de un Pickup puede recogerlo.
+	-Si lo recoge, se spawnea, attachea a la mano correspondiente un EquippedObject y se destruye el Pickup.
+	-Si una mano que esta equipada vuelve a usarse, se spawnea el Pickup correspondiente y se destruye el EquippedObject.
+	-Los Pickups y EquippedObject usados son BPs que heredan de las clases de C++ Pickup y EquippedObject.
+	
+-IA
+
+	-Mi primer planteamiento de la IA fue una (FlyingEnemy) que falsease el vuelo para poder usar la Nav Mesh junto 
+	 con el Detour de Unreal, pero al final lo descarté porque iba a dar mas problemas de los que iba a solucionar.
+	-Finalmente he hecho una que realmente vuela (FlyingEnemyV2) pero sin obstacle avoidance.
+	-Los Characters de las IAs usados son BPs que heredan de la clase de C++ FlyingEnemy.
+	-Los Controllers usados son directamente los de C++ (AFlyingAIDetourController y FlyingAIControllerV2)
+	-En cuanto al BT (BT_FlyingEnemyV2) es un comportamiento sencillo, 2 ramas, Pursuing y Hiding.
+	-La lógica es la que me planteasteis pero he añadido la opción de que visite un numero X de puntos antes de volver a atacar al player.
+	-Las siguientes Task y Decoradores se encuentran en C++:
+	
+		-ThrowBomb -> 						Spawnea un BombPickup
+		-SetBoolValueInBB->					Setea el valor booleano indicado para la key del blackboard seleccionada.
+		-CalculateFarthestHidePoint->   	Calcula el HidePoint mas lejano y lo setea en FarthestHidePoint en el blackboard.
+		-LoopTimesBasedOnBB->				Decorador que loopea el numero de veces según la key del blackboard establecida (Debe ser un int).
+		
+	-En el proyecto os he dejado la primera IA (FlyingEnemy) que no esta acabada por si quereis echarle un vistazo.
+	
+-Bombas
+
+	-La IA spawnea BP_BombPickup que son BPs que heredan de la clase Pickup.
+	-Estos Bps tienen añadido un componente, BombComponent, creado en C++, que se encarga de la lógica de la bomba (timer, checkeo de si da al player cuando explota, etc)
+	-El player implementa la interfaz IDamageable lo que le permite sufrir daño. Cuando recibe daño, saca un mensaje por pantalla.
+	
+-Debug
+
+	-Esto no me lo pediais, pero he metido un sistema de Debug similar al que usamos en Khion ya que me siento muy cómodo trabajando con él.
+	
+
+Y creo que no me dejo nada, cualquier duda que tengais no dudéis en preguntarme. 
+
+Un abrazo!
