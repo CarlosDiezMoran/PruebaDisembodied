@@ -97,6 +97,7 @@ void UBombComponent::InitBomb(float TimeToExplosion, float CurrentTimeTExplode)
 		TextRender->HorizontalAlignment = EHorizTextAligment::EHTA_Center;
 		ExplosionDetection->SetSphereRadius(ExplosionRadius);
 		ExplosionDetection->ShapeColor = FColor::Blue;
+		ExplosionDetection->bHiddenInGame = false;
 		ExplosionDetection->AttachToComponent(Owner->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform, NAME_None);
 	}
 
