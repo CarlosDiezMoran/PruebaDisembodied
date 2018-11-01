@@ -148,3 +148,8 @@ void APruebaDisembodiedCharacter::RightHand()
 		DISEMLOG("Error. RightHandComponent is NULL");
 	}
 }
+
+void APruebaDisembodiedCharacter::OnDamage_Implementation(float Damage, AActor * Instigator)
+{
+	DISEMLOG("HACEN DANIO A YORICK", ELog::PRINT_ONLY, 5.f, FColor::Red);
+}

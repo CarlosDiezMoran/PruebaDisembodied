@@ -7,6 +7,7 @@
 #include "Runtime/Engine/Classes/GameFramework/Character.h"
 #include "Runtime/Engine/Classes/Components/StaticMeshComponent.h"
 #include "Runtime/Engine/Classes/Components/SceneComponent.h"
+#include "ItemModifier/BombComponent.h"
 #include "Debug/DebugLibrary.h"
 
 
@@ -58,6 +59,7 @@ void UEquipmentComponent::AddEquippedObject(TSubclassOf<AEquippedObject> ObjectC
 		if (EquippedObject->IsValidLowLevel() && !EquippedObject->IsPendingKill()) 
 		{
 			EquippedObject->AttachToComponent(Yorick->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SocketOwner);
+			
 		}
 		else 
 		{
@@ -85,6 +87,7 @@ void UEquipmentComponent::RemoveEquippedObject()
 		if (Pickup->IsValidLowLevel() && !Pickup->IsPendingKill())
 		{
 			Pickup->PickupMesh->SetSimulatePhysics(true);
+			InitPickupObjectComponents(Pickup);
 		}
 		else 
 		{
@@ -113,7 +116,50 @@ void UEquipmentComponent::Interact(APickup* Pickup)
 		if (Pickup->IsValidLowLevel() && !Pickup->IsPendingKill()) 
 		{
 			AddEquippedObject(Pickup->EquippedObjectToSpawn);
+			InitEquippedObjectComponents(Pickup);
 			Pickup->Destroy();
+		}
+	}
+}
+
+void UEquipmentComponent::InitEquippedObjectComponents(APickup* Pickup)
+{
+	DISEMLOG();
+
+	if (EquippedObject->IsValidLowLevel() && !EquippedObject->IsPendingKill()) 
+	{
+		//Has BombComponent
+		UActorComponent* ActorComponent = Pickup->GetComponentByClass(UBombComponent::StaticClass());
+
+		if (ActorComponent->IsValidLowLevel() && !ActorComponent->IsPendingKill())
+		{
+			UBombComponent* PickupBombComp = Cast<UBombComponent>(ActorComponent);
+			UBombComponent* EquippedBombComp = Cast<UBombComponent>(EquippedObject->GetComponentByClass(UBombComponent::StaticClass()));
+
+			EquippedBombComp->ExplosionDamage = PickupBombComp->ExplosionDamage;
+			EquippedBombComp->InitBomb(PickupBombComp->TimeToExplode, PickupBombComp->CurrentTime);
+		}
+	}
+
+	
+}
+
+void UEquipmentComponent::InitPickupObjectComponents(APickup* Pickup)
+{
+	DISEMLOG();
+
+	if (EquippedObject->IsValidLowLevel() && !EquippedObject->IsPendingKill())
+	{
+		//Has BombComponent
+		UActorComponent* ActorComponent = EquippedObject->GetComponentByClass(UBombComponent::StaticClass());
+
+		if (ActorComponent->IsValidLowLevel() && !ActorComponent->IsPendingKill())
+		{
+			UBombComponent* EquippedBombComp = Cast<UBombComponent>(ActorComponent);
+			UBombComponent* PickupBombComp = Cast<UBombComponent>(Pickup->GetComponentByClass(UBombComponent::StaticClass()));
+
+			PickupBombComp->ExplosionDamage = EquippedBombComp->ExplosionDamage;
+			PickupBombComp->InitBomb(EquippedBombComp->TimeToExplode, EquippedBombComp->CurrentTime);
 		}
 	}
 }

@@ -38,6 +38,12 @@ class PRUEBADISEMBODIED_API UEquipmentComponent : public UActorComponent
 		UFUNCTION(BlueprintCallable)
 			void Interact(APickup* Pickup = nullptr);
 
+	private:
+		UFUNCTION()
+			void InitEquippedObjectComponents(APickup* Pickup);
+		UFUNCTION()
+			void InitPickupObjectComponents(APickup* Pickup);
+
 	public:
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EquipmentComponent")

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/Damageable.h"
 #include "PruebaDisembodiedCharacter.generated.h"
 
 class APickup;
@@ -11,7 +12,7 @@ class UEquipmentComponent;
 class AYorickFlyingPoint;
 
 UCLASS(config=Game)
-class APruebaDisembodiedCharacter : public ACharacter
+class APruebaDisembodiedCharacter : public ACharacter, public IDamageable
 {
 	GENERATED_BODY()
 
@@ -36,10 +37,19 @@ class APruebaDisembodiedCharacter : public ACharacter
 		//**********************************************************//
 
 		//********************** Equipment ***************************//
+
 		UFUNCTION(BlueprintCallable, Category = "Equipment")
 			void LeftHand();
 		UFUNCTION(BlueprintCallable, Category = "Equipment")
 			void RightHand();
+
+		//**********************************************************//
+
+		//********************** IDamageable ***********************//
+
+		UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "IDamageable")
+			void OnDamage(float Damage, AActor* ActorInstigator);
+		virtual void OnDamage_Implementation(float Damage, AActor* ActorInstigator);
 
 		//**********************************************************//
 		

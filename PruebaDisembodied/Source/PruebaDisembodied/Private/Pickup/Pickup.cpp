@@ -29,7 +29,7 @@ APickup::APickup()
 	//PickupMesh->SetupAttachment(PickupRoot);
 
 	//Detection
-	PickupDetection = CreateDefaultSubobject<USphereComponent>(TEXT("Detection"));
+	PickupDetection = CreateDefaultSubobject<USphereComponent>(TEXT("PickupDetection"));
 	PickupDetection->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	PickupDetection->bGenerateOverlapEvents = true;
 	PickupDetection->SetSphereRadius(200.f);
