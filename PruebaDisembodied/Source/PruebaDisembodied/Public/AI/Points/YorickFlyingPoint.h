@@ -6,9 +6,6 @@
 #include "Engine/TargetPoint.h"
 #include "YorickFlyingPoint.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class PRUEBADISEMBODIED_API AYorickFlyingPoint : public ATargetPoint
 {

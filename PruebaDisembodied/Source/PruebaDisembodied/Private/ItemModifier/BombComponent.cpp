@@ -93,7 +93,6 @@ void UBombComponent::InitBomb(float TimeToExplosion, float CurrentTimeTExplode)
 		TextRender->SetRelativeLocation(FVector(0.f, 0.f, 100.f));
 		TextRender->SetWorldRotation(ControlRotator);
 		TextRender->SetTextRenderColor(FColor(255, 0, 69, 255));
-		//TextRender->SetWorldSize(400.f);
 		TextRender->HorizontalAlignment = EHorizTextAligment::EHTA_Center;
 		ExplosionDetection->SetSphereRadius(ExplosionRadius);
 		ExplosionDetection->ShapeColor = FColor::Blue;

@@ -92,7 +92,6 @@ class APruebaDisembodiedCharacter : public ACharacter, public IDamageable
 
 		//************************************************************//
 
-
 	private:
 
 		UPROPERTY()

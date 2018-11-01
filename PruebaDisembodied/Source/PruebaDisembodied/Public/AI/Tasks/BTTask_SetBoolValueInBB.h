@@ -6,9 +6,6 @@
 #include "BehaviorTree/BTTaskNode.h"
 #include "BTTask_SetBoolValueInBB.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class PRUEBADISEMBODIED_API UBTTask_SetBoolValueInBB : public UBTTaskNode
 {

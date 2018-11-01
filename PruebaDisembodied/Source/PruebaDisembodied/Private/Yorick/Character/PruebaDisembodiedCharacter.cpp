@@ -151,5 +151,5 @@ void APruebaDisembodiedCharacter::RightHand()
 
 void APruebaDisembodiedCharacter::OnDamage_Implementation(float Damage, AActor * Instigator)
 {
-	DISEMLOG("HACEN DANIO A YORICK", ELog::PRINT_ONLY, 5.f, FColor::Red);
+	DISEMLOG("YORICK HAS BEEN INJURED!!!!!!", ELog::PRINT_ONLY, 5.f, FColor::Red);
 }

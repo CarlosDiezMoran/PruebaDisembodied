@@ -13,9 +13,7 @@ class UDamageable : public UInterface
 	GENERATED_UINTERFACE_BODY()
 };
 
-/**
- * 
- */
+
 class PRUEBADISEMBODIED_API IDamageable
 {
 	GENERATED_IINTERFACE_BODY()

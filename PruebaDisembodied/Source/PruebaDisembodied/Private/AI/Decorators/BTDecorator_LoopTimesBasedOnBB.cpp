@@ -22,6 +22,8 @@ void UBTDecorator_LoopTimesBasedOnBB::DescribeRuntimeValues(const UBehaviorTreeC
 
 void UBTDecorator_LoopTimesBasedOnBB::OnNodeActivation(FBehaviorTreeSearchData & SearchData)
 {
+	DISEMLOG();
+
 	UBlackboardComponent* BBComponent = SearchData.OwnerComp.GetBlackboardComponent();
 	NumLoops = BBComponent->GetValueAsInt(BBKeyNumOfLoops.SelectedKeyName);
 

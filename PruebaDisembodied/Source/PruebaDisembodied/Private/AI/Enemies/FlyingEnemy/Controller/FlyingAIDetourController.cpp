@@ -14,11 +14,10 @@
 #include "DebugLibrary.h"
 
 AFlyingAIDetourController::AFlyingAIDetourController(const FObjectInitializer& ObjectInitializer)
-	: Super(/*ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>(TEXT("PathFollowingComponent"))*/) 
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>(TEXT("PathFollowingComponent"))) 
 {
 	DISEMLOG();
 
-	/*
 	//CrowdFollowingComponent
 	Pathfol = Cast<UCrowdFollowingComponent>(GetPathFollowingComponent());
 
@@ -32,7 +31,7 @@ AFlyingAIDetourController::AFlyingAIDetourController(const FObjectInitializer& O
 	{
 		DISEMLOG("Error. Pathfol is NULL.");
 	}
-	*/
+	
 	//BehaviorTree & Blackboard
 	BBComponent = CreateDefaultSubobject<UBlackboardComponent>(FName("BBComponent"));
 	BehaviorTreeComp = CreateDefaultSubobject<UBehaviorTreeComponent>(FName("BehaviorTreeComponent"));
@@ -176,9 +175,6 @@ void AFlyingAIDetourController::Possess(APawn * InPawn)
 	{
 		DISEMLOG("Error. Possess couldn't be done");
 	}
-
-
-
 
 	// Run Behavior tree
 	if (bDoPosess)

@@ -32,6 +32,4 @@ class PRUEBADISEMBODIED_API AFlyingAIControllerV2 : public AAIController
 	private:
 		UPROPERTY()
 			UHidePointsContainer* HidePoints;
-	
-	
 };

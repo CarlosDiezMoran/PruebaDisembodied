@@ -15,7 +15,6 @@ enum class EYorickState : uint8 {
 	STANDARD,				
 };
 
-
 UCLASS()
 class PRUEBADISEMBODIED_API AYorickController : public APlayerController
 {
@@ -101,6 +100,4 @@ class PRUEBADISEMBODIED_API AYorickController : public APlayerController
 
 		EYorickState CurrentState;
 		UEventsManager* EventsManager;
-
-	
 };

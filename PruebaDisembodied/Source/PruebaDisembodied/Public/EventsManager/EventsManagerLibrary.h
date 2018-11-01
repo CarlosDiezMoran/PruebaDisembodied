@@ -16,6 +16,4 @@ class PRUEBADISEMBODIED_API UEventsManagerLibrary : public UBlueprintFunctionLib
 		UEventsManagerLibrary();
 		UFUNCTION(BlueprintPure, Category = "Events Manager")
 			static UEventsManager* GetEventsManager();
-	
-	
 };

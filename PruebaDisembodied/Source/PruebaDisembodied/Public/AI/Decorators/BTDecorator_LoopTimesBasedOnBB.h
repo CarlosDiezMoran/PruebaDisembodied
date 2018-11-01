@@ -6,7 +6,6 @@
 #include "BehaviorTree/Decorators/BTDecorator_Loop.h"
 #include "BTDecorator_LoopTimesBasedOnBB.generated.h"
 
-
 UCLASS()
 class PRUEBADISEMBODIED_API UBTDecorator_LoopTimesBasedOnBB : public UBTDecorator_Loop
 {

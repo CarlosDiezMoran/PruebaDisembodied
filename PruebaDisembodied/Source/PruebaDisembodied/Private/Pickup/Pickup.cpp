@@ -17,25 +17,18 @@ APickup::APickup()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//Root
-	//PickupRoot = CreateDefaultSubobject<USceneComponent>(TEXT("PickupRoot"));
-	//SetRootComponent(PickupRoot);
-
 	//Mesh
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PickupMesh"));
 	PickupMesh->SetSimulatePhysics(true);
 	PickupMesh->SetMassOverrideInKg(NAME_None, 100.f, true);
 	SetRootComponent(PickupMesh);
-	//PickupMesh->SetupAttachment(PickupRoot);
 
 	//Detection
 	PickupDetection = CreateDefaultSubobject<USphereComponent>(TEXT("PickupDetection"));
 	PickupDetection->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	PickupDetection->bGenerateOverlapEvents = true;
 	PickupDetection->SetSphereRadius(200.f);
-	//PickupDetection->SetupAttachment(PickupRoot);
 	PickupDetection->SetupAttachment(PickupMesh);
-	
 }
 
 // Called when the game starts or when spawned

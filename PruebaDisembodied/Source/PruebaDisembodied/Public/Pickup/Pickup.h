@@ -33,8 +33,6 @@ public:
 
 public:
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
-	//	USceneComponent* PickupRoot;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Pickup", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* PickupMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Pickup")

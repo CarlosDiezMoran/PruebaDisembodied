@@ -50,5 +50,4 @@ class PRUEBADISEMBODIED_API UEquipmentComponent : public UActorComponent
 			FName SocketOwner;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EquipmentComponent")
 			AEquippedObject* EquippedObject;
-		
 };
