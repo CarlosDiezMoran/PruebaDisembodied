@@ -1,43 +1,27 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "AI/Enemies/FlyingEnemy/Controller/FlyingAIDetourController.h"
-#include "Navigation/CrowdFollowingComponent.h"
+#include "AI/Enemies/FlyingEnemyV2/Controller/FlyingAIControllerV2.h"
 #include "Runtime/AIModule/Classes/BehaviorTree/BlackboardComponent.h"
 #include "Runtime/AIModule/Classes/BehaviorTree/BehaviorTreeComponent.h"
 #include "Runtime/AIModule/Classes/BehaviorTree/BehaviorTree.h"
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
-#include "AI/BBData/HidePointsContainer.h"
-#include "AI/Enemies/FlyingEnemy/Character/FlyingEnemy.h"
 #include "Yorick/Character/PruebaDisembodiedCharacter.h"
+#include "AI/BBData/HidePointsContainer.h"
 #include "AI/Points/HidePoint.h"
+#include "AI/Enemies/FlyingEnemy/Character/FlyingEnemy.h"
+#include "AI/Points/YorickFlyingPoint.h"
 #include "DebugLibrary.h"
 
-AFlyingAIDetourController::AFlyingAIDetourController(const FObjectInitializer& ObjectInitializer)
-	: Super(/*ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>(TEXT("PathFollowingComponent"))*/) 
+AFlyingAIControllerV2::AFlyingAIControllerV2() : Super() 
 {
 	DISEMLOG();
 
-	/*
-	//CrowdFollowingComponent
-	Pathfol = Cast<UCrowdFollowingComponent>(GetPathFollowingComponent());
-
-	if (Pathfol->IsValidLowLevel() && !Pathfol->IsPendingKill())
-	{
-		Pathfol->SetCrowdSeparationWeight(90.f, true);
-		Pathfol->SetCrowdSeparation(true);
-		Pathfol->SetCrowdAvoidanceQuality(ECrowdAvoidanceQuality::High);
-	}
-	else 
-	{
-		DISEMLOG("Error. Pathfol is NULL.");
-	}
-	*/
 	//BehaviorTree & Blackboard
 	BBComponent = CreateDefaultSubobject<UBlackboardComponent>(FName("BBComponent"));
 	BehaviorTreeComp = CreateDefaultSubobject<UBehaviorTreeComponent>(FName("BehaviorTreeComponent"));
 
-	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BT(TEXT("BehaviorTree'/Game/AI/Enemies/FlyingEnemy/BT/BT_FlyingEnemy.BT_FlyingEnemy'"));
+	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BT(TEXT("BehaviorTree'/Game/AI/Enemies/FlyingEnemyV2/BT/BT_FliyingEnemyV2.BT_FliyingEnemyV2'"));
 	if (BT.Succeeded())
 	{
 		UBehaviorTree* Asset = BT.Object;
@@ -48,21 +32,57 @@ AFlyingAIDetourController::AFlyingAIDetourController(const FObjectInitializer& O
 	HidePoints = NewObject<UHidePointsContainer>(UHidePointsContainer::StaticClass());
 }
 
-void AFlyingAIDetourController::BeginPlay()
+
+void AFlyingAIControllerV2::BeginPlay()
 {
 	DISEMLOG();
 
 	Super::BeginPlay();
 
+	/*
+		Setting Yorick's ref in BeginPlay function cause Possess is executed before BeginPlay
+	*/
+
+	//Check Yorick
 	TArray<AActor*> FoundPlayers;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APruebaDisembodiedCharacter::StaticClass(), FoundPlayers);
 	if (FoundPlayers.Num() > 0)
 	{
-		BBComponent->SetValueAsObject("Yorick", Cast<APruebaDisembodiedCharacter>(FoundPlayers[0]));
+		APruebaDisembodiedCharacter* Yorick = Cast<APruebaDisembodiedCharacter>(FoundPlayers[0]);
+		if (Yorick->IsValidLowLevel() && !Yorick->IsPendingKill())
+		{
+			//Spawn FlyingPoint in case is not already spawned
+			if (!Yorick->YorickFlyinghPoint->IsValidLowLevel() || Yorick->YorickFlyinghPoint->IsPendingKill())
+			{
+				FActorSpawnParameters SpawnInfo;
+				SpawnInfo.Owner = this;
+				FVector Location = Yorick->YorickFlyinghPointLocation->GetComponentLocation();
+				FRotator Rotation = Yorick->YorickFlyinghPointLocation->GetComponentRotation();
+				Yorick->YorickFlyinghPoint = GetWorld()->SpawnActor<AYorickFlyingPoint>(Location, Rotation, SpawnInfo);
+
+				if (Yorick->YorickFlyinghPoint->IsValidLowLevel() && !Yorick->YorickFlyinghPoint->IsPendingKill())
+				{
+					Yorick->YorickFlyinghPoint->AttachToComponent(Yorick->YorickFlyinghPointLocation, FAttachmentTransformRules::SnapToTargetIncludingScale);
+
+					//Store Yorick in BB
+					BBComponent->SetValueAsObject("YoricksFlyingPoint", Cast<APruebaDisembodiedCharacter>(FoundPlayers[0])->YorickFlyinghPoint);
+				}
+			}
+			else
+			{
+				//Store Yorick in BB
+				BBComponent->SetValueAsObject("YoricksFlyingPoint", Cast<APruebaDisembodiedCharacter>(FoundPlayers[0])->YorickFlyinghPoint);
+			}
+		}
+		else
+		{
+			DISEMLOG("Error. Yorick is NULL");
+		}
 	}
+	
 }
 
-void AFlyingAIDetourController::Possess(APawn * InPawn)
+void AFlyingAIControllerV2::Possess(APawn * InPawn)
 {
 	DISEMLOG();
 
@@ -79,7 +99,7 @@ void AFlyingAIDetourController::Possess(APawn * InPawn)
 		bDoPosess = false;
 	}
 
-	if (bDoPosess) 
+	if (bDoPosess)
 	{
 		if (!BBComponent->IsValidLowLevel() || BBComponent->IsPendingKill())
 		{
@@ -99,7 +119,7 @@ void AFlyingAIDetourController::Possess(APawn * InPawn)
 			bDoPosess = false;
 		}
 
-		if (bDoPosess) 
+		if (bDoPosess)
 		{
 			//Initialize the Blackboard 
 			bool bBBRes = BBComponent->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
@@ -113,72 +133,50 @@ void AFlyingAIDetourController::Possess(APawn * InPawn)
 				{
 					AHidePoint* HidePoint = Cast<AHidePoint>(Actor);
 
-					if (ControlledEnemy->HidePointsID == HidePoint->Id) 
+					if (ControlledEnemy->HidePointsID == HidePoint->Id)
 					{
 						HidePoints->HidePoints.AddUnique(HidePoint);
 					}
 				}
 
 				//Check HidePoints
-				if (HidePoints->HidePoints.Num() > 0) 
+				if (HidePoints->HidePoints.Num() > 0)
 				{
 					// Deafult Values
 
 					// Store HidePoints in BB
 					BBComponent->SetValueAsObject("HidePoints", HidePoints);
 
-					//Check Yorick
-					if (!ControlledEnemy->YorickCharacter->IsValidLowLevel() || ControlledEnemy->YorickCharacter->IsPendingKill()) 
-					{
-						TArray<AActor*> FoundPlayers;
-						UGameplayStatics::GetAllActorsOfClass(GetWorld(), APruebaDisembodiedCharacter::StaticClass(), FoundPlayers);
-						if (FoundPlayers.Num() > 0)
-						{
-							ControlledEnemy->YorickCharacter = Cast<APruebaDisembodiedCharacter>(FoundPlayers[0]);
-							if (!ControlledEnemy->YorickCharacter->IsValidLowLevel() || ControlledEnemy->YorickCharacter->IsPendingKill())
-							{
-								DISEMLOG("Error. YorickCharacter is NULL.");
-								bDoPosess = false;
-							}
-						}
-					}
-						
-					//Store Yorick in BB
-					BBComponent->SetValueAsObject("Yorick", ControlledEnemy->YorickCharacter);
-
 					//Store HidePointsToGoBeforeNextAttack in BB
-					if (bDoPosess) 
+					if (bDoPosess)
 					{
 						BBComponent->SetValueAsInt("HidePointsToGoBeforeNextAttack", ControlledEnemy->HidePointsToGoBeforeNextAttack);
 					}
-					
+
 					//Store HidePointsToGoBeforeNextAttack in BB
-					BBComponent->SetValueAsBool("IsPursuingYorick", true);		
+					BBComponent->SetValueAsBool("IsPursuingYorick", true);
 				}
-				else 
+				else
 				{
 					DISEMLOG("Error. HidePoints is empty in " + ControlledEnemy->GetName());
 					bDoPosess = false;
 				}
 			}
-			else 
+			else
 			{
 				DISEMLOG("Error. BBComponent couldn't be initialized in " + ControlledEnemy->GetName());
 				bDoPosess = false;
 			}
 		}
-		else 
+		else
 		{
 			DISEMLOG("Error. Possess couldn't be done in " + ControlledEnemy->GetName());
 		}
 	}
-	else 
+	else
 	{
 		DISEMLOG("Error. Possess couldn't be done");
 	}
-
-
-
 
 	// Run Behavior tree
 	if (bDoPosess)

@@ -7,10 +7,13 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
+#include "Runtime/Engine/Classes/Components/SceneComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "DebugLibrary.h"
+#include "Runtime/Engine/Classes/Engine/World.h"
 #include "Pickup/Pickup.h"
 #include "EquipmentComponent.h"
+#include "AI/Points/YorickFlyingPoint.h"
+#include "DebugLibrary.h"
 
 APruebaDisembodiedCharacter::APruebaDisembodiedCharacter()
 {
@@ -53,6 +56,17 @@ APruebaDisembodiedCharacter::APruebaDisembodiedCharacter()
 	AddOwnedComponent(RightHandComponent);
 	LeftHandComponent = CreateDefaultSubobject<UEquipmentComponent>(TEXT("LeftHand"));
 	AddOwnedComponent(LeftHandComponent);
+
+	//AI Points
+	YorickFlyinghPointLocation = CreateDefaultSubobject<USceneComponent>(TEXT("YorickFlyinghPoint"));
+	YorickFlyinghPointLocation->SetupAttachment(RootComponent);
+}
+
+void APruebaDisembodiedCharacter::BeginPlay()
+{
+	DISEMLOG();
+
+	Super::BeginPlay();
 }
 
 void APruebaDisembodiedCharacter::AddDetectedObject(APickup * DetectedObject)

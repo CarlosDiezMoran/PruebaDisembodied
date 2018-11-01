@@ -8,6 +8,7 @@
 
 class APickup;
 class UEquipmentComponent;
+class AYorickFlyingPoint;
 
 UCLASS(config=Game)
 class APruebaDisembodiedCharacter : public ACharacter
@@ -16,6 +17,7 @@ class APruebaDisembodiedCharacter : public ACharacter
 
 	public:
 		APruebaDisembodiedCharacter();
+		virtual void BeginPlay() override;
 
 		/** Returns CameraBoom subobject **/
 		FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -63,10 +65,22 @@ class APruebaDisembodiedCharacter : public ACharacter
 			float DetectionAngle = 90.f;
 
 		//********************** Equipment ***************************//
+
 		UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 			UEquipmentComponent* RightHandComponent;
 		UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 			UEquipmentComponent* LeftHandComponent;
+
+		//************************************************************//
+
+		//********************** AI Points ***************************//
+
+		UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+			AYorickFlyingPoint* YorickFlyinghPoint;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite)
+			USceneComponent* YorickFlyinghPointLocation;
+
+		//************************************************************//
 
 
 	private:
